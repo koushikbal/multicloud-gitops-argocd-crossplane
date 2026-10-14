@@ -1,0 +1,22 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata: {name: gke-cluster}
+spec:
+  compositeTypeRef: {apiVersion: platform.example.io/v1alpha1, kind: XGKECluster}
+  resources:
+    - name: cluster
+      base: {apiVersion: container.gcp.upbound.io/v1beta1, kind: Cluster, spec: {forProvider: {location: northamerica-northeast1, initialNodeCount: 1}, providerConfigRef: {name: default}}}
+---
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata: {name: xgkeclusters.platform.example.io}
+spec:
+  group: platform.example.io
+  names: {kind: XGKECluster, plural: xgkeclusters}
+  claimNames: {kind: GKECluster, plural: gkeclusters}
+  versions: [{name: v1alpha1, served: true, referenceable: true, schema: {openAPIV3Schema: {type: object}}}]
+---
+apiVersion: platform.example.io/v1alpha1
+kind: GKECluster
+metadata: {name: gke-platform}
+spec: {}

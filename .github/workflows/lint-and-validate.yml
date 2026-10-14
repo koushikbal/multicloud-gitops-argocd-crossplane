@@ -1,0 +1,22 @@
+name: lint-and-validate
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  manifests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: imranismail/setup-kustomize@v2
+      - name: Build overlays
+        run: |
+          kustomize build apps/overlays/gcp-gke >/tmp/gke.yaml
+          kustomize build apps/overlays/azure-aks >/tmp/aks.yaml
+      - name: Validate YAML
+        uses: ibiqlik/action-yamllint@v3
+        with:
+          file_or_dir: .
+          config_file: .yamllint.yml

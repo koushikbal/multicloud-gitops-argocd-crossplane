@@ -1,0 +1,22 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata: {name: aks-cluster}
+spec:
+  compositeTypeRef: {apiVersion: platform.example.io/v1alpha1, kind: XAKSCluster}
+  resources:
+    - name: cluster
+      base: {apiVersion: containerservice.azure.upbound.io/v1beta1, kind: KubernetesCluster, spec: {forProvider: {location: canadacentral, dnsPrefix: platform-demo, defaultNodePool: [{name: general, vmSize: Standard_D2s_v5, nodeCount: 2}], identity: [{type: SystemAssigned}]}, providerConfigRef: {name: default}}}
+---
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata: {name: xaksclusters.platform.example.io}
+spec:
+  group: platform.example.io
+  names: {kind: XAKSCluster, plural: xaksclusters}
+  claimNames: {kind: AKSCluster, plural: aksclusters}
+  versions: [{name: v1alpha1, served: true, referenceable: true, schema: {openAPIV3Schema: {type: object}}}]
+---
+apiVersion: platform.example.io/v1alpha1
+kind: AKSCluster
+metadata: {name: aks-platform}
+spec: {}

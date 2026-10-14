@@ -1,0 +1,7 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: platform-demo, namespace: platform-demo}
+spec:
+  template:
+    spec:
+      nodeSelector: {kubernetes.azure.com/agentpool: general}
